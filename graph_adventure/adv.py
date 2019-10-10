@@ -1,3 +1,14 @@
+# OK, my typical walk through psycho babble.
+# What do I know that I'll need?
+# a mechanism to keep track of rooms that I've visited, something for the graph, something to contain the directions, 
+# breadth/depth first mechanism.
+# questions:
+# how to keep track of the rooms? by id only?  check to see of the number of rooms i've checked is less than the total
+# number of rooms?
+# do i need a mechanism to walk back to rooms?
+# i'll need a mechanism to know where the player is at the moment
+
+
 from room import Room
 from player import Player
 from world import World
@@ -21,7 +32,61 @@ player = Player("Name", world.startingRoom)
 
 
 # FILL THIS IN
-traversalPath = ['n', 's']
+visited_rooms = set()
+graph = {}
+traversalPath = []
+directions = {
+    'e':'w',
+    'w':'e',
+    'n':'s',
+    's':'n'
+}
+
+# no wizardry here.  this was pretty much taken from class projects
+# need to keep track of the rooms that have been visited
+# will have a roomId to start with
+def visitedRoomId(graph, roomIdStart):
+    # this will check to see if the room has been visited or not
+    for direction in graph[roomIdStart]:
+        if graph[roomIdStart][direction] = '':
+            return None
+
+    # which rooms to re-vist
+    qq = []
+    qq.append([roomIdStart])
+    visited = set()
+
+    while len(qq) > 0:
+        path = qq.pop(0)
+        roomId = path[-1]
+
+        if roomId not in visited:
+            visited.add(roomId)
+
+            # if this comes up empty handed, then we'll mark this as a room to visit
+            for direction in graph[roomId]:
+                if graph[room][direction] = '':
+                    return path
+
+        for direction in graph[roomId]:
+            newPath = path.copy()
+            roomInfo = graph[roomId][roomInfo]
+            newPath.append(roomInfo)
+            qq.append(newPath)
+            
+    return None
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # TRAVERSAL TEST
