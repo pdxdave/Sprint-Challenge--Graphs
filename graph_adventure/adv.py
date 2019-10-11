@@ -33,22 +33,22 @@ player = Player("Name", world.startingRoom)
 
 # FILL THIS IN
 visited_rooms = set()
-graph = {}
+visited_graph = {}
 traversalPath = []
-directions = {
+movementDirections = {
     'e':'w',
     'w':'e',
     'n':'s',
     's':'n'
 }
 
-# no wizardry here.  this was pretty much taken from class projects
+# this was pretty much taken from class projects.
 # need to keep track of the rooms that have been visited
 # will have a roomId to start with
 def visitedRoomId(graph, roomIdStart):
     # this will check to see if the room has been visited or not
     for direction in graph[roomIdStart]:
-        if graph[roomIdStart][direction] = '':
+        if graph[roomIdStart][direction] == '?':
             return None
 
     # which rooms to re-vist
@@ -65,26 +65,60 @@ def visitedRoomId(graph, roomIdStart):
 
             # if this comes up empty handed, then we'll mark this as a room to visit
             for direction in graph[roomId]:
-                if graph[room][direction] = '':
+                if graph[roomId][direction] == '?':
                     return path
 
-        for direction in graph[roomId]:
-            newPath = path.copy()
-            roomInfo = graph[roomId][roomInfo]
-            newPath.append(roomInfo)
-            qq.append(newPath)
-            
+            for direction in graph[roomId]:
+                newPath = path.copy()
+                roomInfo = graph[roomId][direction]
+                newPath.append(roomInfo)
+                qq.append(newPath)
+
     return None
 
 
+# this is where a map will be made to keep track of the directions we've gone
+def taggedRooms(graph, currentRoom):
+    if currentRoom.id not in graph:
+        graph[currentRoom.id] = {i: '?' for i in currentRoom.getExits()}
+        visited_rooms.add(currentRoom.id)
 
 
+# looking at the traversal test there's a line making sure the length 
+# of visited_rooms equals the length of the roomGraph.
+# need to let this spin while the length of the roomGraph doesn't equal the length of the graph
+while len(roomGraph) != len(visited_graph):
+    # so let's take the room id that the player is currently in and assign it to curRoomId
+    curRoomId = player.currentRoom.id
 
+    
+    taggedRooms(visited_graph, player.currentRoom)
 
+    for direction in visited_graph[curRoomId]:
+        if visited_graph[curRoomId][direction] == '?':
+            traversalPath.append(direction)
+            player.travel(direction)
+            taggedRooms(visited_graph, player.currentRoom)
 
+           # now we have new room with an id
+            newRoomId = player.currentRoom.id
+            movementDirection = movementDirections[direction]
 
+            visited_graph[curRoomId][direction] = newRoomId
+            visited_graph[newRoomId][movementDirection] = curRoomId
+    
+            curRoomId = newRoomId
 
+            break # check here
 
+    # here's about getting back
+    getBackToRoomId = visitedRoomId(visited_graph, player.currentRoom.id)
+    if getBackToRoomId is not None:
+        for id in getBackToRoomId:
+            for direction in visited_graph[curRoomId]:
+                if visited_graph[curRoomId][direction] == id:
+                    traversalPath.append(direction)
+                    player.travel(direction)
 
 
 
